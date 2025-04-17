@@ -52,8 +52,6 @@
        
           ;
           const messages = await getAllMessagesFromFolder(token, folderId);
-          localStorage.setItem('access_token', token);
-          getInProgress()
           console.log(messages);
            messages.forEach(message => {
             const messageInfo = `Subject: ${message.subject}\nFrom: ${message.from.emailAddress.name} <${message.from.emailAddress.address}>\nReceived: ${new Date(message.receivedDateTime).toLocaleString()}\n\n`;
@@ -64,6 +62,17 @@
           document.getElementById('output').textContent = 'Error: ' + err;
         }
       }
+      const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    if (urlParams.has('code')) {
+      // The user has been redirected back with an authorization code
+      const code = urlParams.get('code');
+      console.log('Authorization code:', code);
+      localStorage.setItem('basecampCode', code);
+      // You can now exchange the code for an access token using your server-side code
+    } else {
+      console.log('No authorization code found in URL parameters.');
+    }
     });
 
     async function getFolderIdByName(token, folderName) {
