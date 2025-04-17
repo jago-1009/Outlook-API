@@ -1,0 +1,115 @@
+<!-- https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json IN PROGRESS -->
+ <!-- https://3.basecamp.com/3537899/buckets/38519896/todolists/7663592669/todos.json NEW -->
+  <!-- https://3.basecamp.com/3537899/buckets/38519896/todolists/7663601115/todos.json?completed=true PUBLISHED -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fetch Outlook Mail</title>
+</head>
+<body>
+  <button id="signin">Sign in and Fetch Mail</button>
+  <pre id="output"></pre>
+
+  <script>
+    const tenant = 'common'; // Or your specific tenant ID
+    const clientId = '';
+    const redirectUri = window.location.origin;
+    const scopes = 'https://graph.microsoft.com/Mail.Read';
+
+    document.getElementById('signin').addEventListener('click', () => {
+      const authUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize` +
+        `?client_id=${clientId}` +
+        `&response_type=token` +
+        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+        `&scope=${encodeURIComponent(scopes)}` +
+        `&response_mode=fragment`;
+
+      window.location.href = authUrl;
+    });
+
+    window.addEventListener('load', async () => {
+      const hash = window.location.hash;
+      if (hash.includes('access_token')) {
+        const params = new URLSearchParams(hash.substring(1));
+        const token = params.get('access_token');
+        try {
+          const folderId = await getFolderIdByName(token, 'Tickets');
+          if (!folderId) {
+            document.getElementById('output').textContent = 'Folder "Tickets" not found.';
+            return;
+          }
+       
+          ;
+          const messages = await getAllMessagesFromFolder(token, folderId);
+          getInProgress()
+          console.log(messages);
+           messages.forEach(message => {
+            const messageInfo = `Subject: ${message.subject}\nFrom: ${message.from.emailAddress.name} <${message.from.emailAddress.address}>\nReceived: ${new Date(message.receivedDateTime).toLocaleString()}\n\n`;
+            document.getElementById('output').textContent += messageInfo;
+            
+           });
+        } catch (err) {
+          document.getElementById('output').textContent = 'Error: ' + err;
+        }
+      }
+    });
+
+    async function getFolderIdByName(token, folderName) {
+  const folderQueue = ['https://graph.microsoft.com/v1.0/me/mailFolders'];
+  
+  while (folderQueue.length > 0) {
+    const url = folderQueue.shift();
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    for (const folder of data.value) {
+      if (folder.displayName === folderName) {
+        return folder.id;
+      }
+
+      if (folder.childFolderCount > 0) {
+        folderQueue.push(`https://graph.microsoft.com/v1.0/me/mailFolders/${folder.id}/childFolders`);
+      }
+    }
+
+    if (data['@odata.nextLink']) {
+      folderQueue.push(data['@odata.nextLink']);
+    }
+  }
+
+  return null; // Not found
+}
+
+    async function getAllMessagesFromFolder(token, folderId) {
+      let url = `https://graph.microsoft.com/v1.0/me/mailFolders/${folderId}/messages?$top=50`;
+      const allMessages = [];
+
+      while (url) {
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        allMessages.push(...data.value);
+        url = data['@odata.nextLink'] || null;
+      }
+
+      return allMessages;
+    }
+  async function getInProgress() {
+    const response = await fetch('https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json', {
+      mode:'no-cors',
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const data = await response.json();
+    console.log('in progress', data)
+  }
+  </script>
+</body>
+</html>
