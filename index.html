@@ -52,6 +52,7 @@
        
           ;
           const messages = await getAllMessagesFromFolder(token, folderId);
+          localStorage.setItem('access_token', token);
           getInProgress()
           console.log(messages);
            messages.forEach(message => {
