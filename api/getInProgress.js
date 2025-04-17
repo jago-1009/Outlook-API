@@ -7,10 +7,10 @@ export default async function handler(req, res) {
     if (!token) {
       return res.status(418).json({ error: 'Access token not found' });
     }  
-    const response = await fetch(`https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json`, {
+    const response = await fetch(`https://3.basecamp.com/3537899/buckets/1/todolists/2/todos.json`, {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'User-Agent': 'Localhost-Test (garwoodj22@gmail.com)'
+        'User-Agent': 'Localhost-Test (email@gmail.com)'
       }
     });
   
@@ -23,3 +23,5 @@ export default async function handler(req, res) {
   }
 
 //   https://launchpad.37signals.com/authorization/new?type=web_server&client_id=7e1d387ff157828dcf06ba3ebf5abbf035c03d6b&redirect_uri=https://outlook-api.vercel.app
+// https://3.basecamp.com/3537899/buckets/1/todolists/2/todos.json
+//https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json
