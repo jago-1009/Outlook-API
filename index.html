@@ -22,9 +22,7 @@
 
     
     document.getElementById('basecamp-signin').addEventListener('click', () => {
-      const authUrl = `https://launchpad.37signals.com/authorization/new?type=web_server&client_id=7e1d387ff157828dcf06ba3ebf5abbf035c03d6b&redirect_uri=https://outlook-api.vercel.app/` +
-        `&response_type=code` +
-        `&scope=read write`;
+      const authUrl = `https://launchpad.37signals.com/authorization/new?type=web_server&client_id=7e1d387ff157828dcf06ba3ebf5abbf035c03d6b&redirect_uri=https://outlook-api.vercel.app`
       // Redirect to Basecamp authorization URL
 
       window.location.href = authUrl;
