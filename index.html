@@ -61,13 +61,7 @@
             let newArr = await getNew();
             let messages = messagesRaw.filter((message) => {
               return [progressArr, compArr, newArr].some((arr) => {
-                console.log(message.subject)
-                return messagesRaw.some((item) => {
-                  return (
-                    
-                    item.title.includes(message.subject) == false
-                  );
-                });
+                return message
               });
             });
 
