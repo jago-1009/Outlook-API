@@ -10,11 +10,10 @@ export default async function handler(req, res) {
     `https://launchpad.37signals.com/authorization/token` +
       "?type=web_server" +
       "&client_id=7e1d387ff157828dcf06ba3ebf5abbf035c03d6b" +
-      "&client_secret=" +
-      process.env.CLIENT_SECRET +
+      "&client_secret=" + process.env.CLIENT_SECRET +
       "&redirect_uri=https://outlook-api.vercel.app" +
-      "&type=verification-code",
-    {method: "POST"}
+      "&code=" + code, // Send the authorization code
+    { method: "POST" }
   );
 
   if (!response.ok) {
