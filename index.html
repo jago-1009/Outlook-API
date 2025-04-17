@@ -123,6 +123,9 @@
     
    const response = await fetch('/api/getInProgress', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ token: localStorage.getItem('basecampCode') }),
    });
     if (!response.ok) {

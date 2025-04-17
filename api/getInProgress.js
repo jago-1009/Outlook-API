@@ -2,6 +2,7 @@
 export default async function handler(req, res) {
 
  const { token } = req.body;
+ console.log('req.body:', req.body);
 
     if (!token) {
       return res.status(418).json({ error: 'Access token not found' });
