@@ -76,7 +76,7 @@
             console.log(messages);
             messages.forEach((message) => {
               
-              const messageInfo = `<iframe srcdoc="${message.body.content}></iframe>`;
+              const messageInfo = `<iframe srcdoc="${message.body.content}"></iframe>`;
               document.getElementById("output").innerHTML += messageInfo;
             });
           } catch (err) {
