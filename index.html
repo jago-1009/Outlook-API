@@ -63,7 +63,7 @@
               return [progressArr, compArr, newArr].some((arr) => {
                 return arr.some((item) => {
                   return (
-                    message.subject.includes(item.title) == false
+                    item.title.includes(message.subject) == false
                   );
                 });
               });
