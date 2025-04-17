@@ -1,10 +1,10 @@
 
 export default async function handler(req, res) {
 
- const {token } = req.body;
+ const { token } = req.body;
 
     if (!token) {
-      return res.status(401).json({ error: 'Access token not found' });
+      return res.status(418).json({ error: 'Access token not found' });
     }  
     const response = await fetch(`https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json`, {
       headers: {
