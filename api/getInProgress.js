@@ -1,11 +1,16 @@
 
 export default async function handler(req, res) {
-    const token = process.env.BASECAMP_TOKEN;
-    const accountId = process.env.BASECAMP_ACCOUNT_ID;
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const accessToken = urlParams.get('code');
+    console.log('Access Token:', accessToken);
+    console.log('Query String:', queryString);
+        const accountId = process.env.BASECAMP_ACCOUNT_ID;
   
     const response = await fetch(`https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${accessToken}`,
         'User-Agent': 'Localhost-Test (garwoodj22@gmail.com)'
       }
     });

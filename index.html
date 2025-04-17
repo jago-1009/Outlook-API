@@ -109,6 +109,7 @@
       return allMessages;
     }
   async function getInProgress() {
+    
    const response = await fetch('/api/getInProgress');
     if (!response.ok) {
       throw new Error('Network response was not ok');
