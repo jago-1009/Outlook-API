@@ -120,13 +120,25 @@
       return allMessages;
     }
   async function getInProgress() {
-    
+    const auth = await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: localStorage.getItem('basecampCode') }),
+    });
+    if (!auth.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const authData = await auth.json();
+    const token = authData.access_token;
+
    const response = await fetch('/api/getInProgress', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ token: localStorage.getItem('basecampCode') }),
+    body: JSON.stringify({ token: access_token }),
    });
     if (!response.ok) {
       throw new Error('Network response was not ok');
