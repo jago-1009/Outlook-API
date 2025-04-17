@@ -2,10 +2,10 @@
 export default async function handler(req, res) {
 
  const accessToken = localStorage.getItem('access_token');
-    console.log('Access Token:', accessToken);
-    console.log('Query String:', queryString);
-        const accountId = process.env.BASECAMP_ACCOUNT_ID;
-  
+
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Access token not found' });
+    }  
     const response = await fetch(`https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,

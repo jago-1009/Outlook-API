@@ -58,7 +58,7 @@
             document.getElementById('output').textContent += messageInfo;
             
            });
-           const inProgress = await getInProgress();
+          await getInProgress();
         } catch (err) {
           document.getElementById('output').textContent = 'Error: ' + err;
         }
