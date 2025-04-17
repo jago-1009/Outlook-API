@@ -8,11 +8,23 @@
     <meta charset="UTF-8" />
     <title>Fetch Outlook Mail</title>
   </head>
+  <style>
+
+    .output {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .output iframe {
+      width: 33%;
+      height: fit-content;
+      border: none;
+      margin: 10px;
+    }
+  </style>
   <body>
     <button id="signin">Sign in and Fetch Mail</button>
     <pre id="output"></pre>
     <button id="basecamp-signin">Sign into Basecamp</button>
-
     <script>
       let authBody = null;
       const tenant = "common"; // Or your specific tenant ID
