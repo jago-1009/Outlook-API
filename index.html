@@ -48,7 +48,7 @@
           try {
             const folderId = await getFolderIdByName(token, "Tickets");
             if (!folderId) {
-              document.getElementById("output").textContent =
+              document.getElementById("output").innerHTML =
                 'Folder "Tickets" not found.';
               return;
             }
@@ -73,15 +73,11 @@
             console.log(messages);
             messages.forEach((message) => {
               if (message.subject) return; // Skip if subject is not available
-              const messageInfo = `Subject: ${message.subject}\nFrom: ${
-                message.from.emailAddress.name
-              } <${message.from.emailAddress.address}>\nReceived: ${new Date(
-                message.receivedDateTime
-              ).toLocaleString()}\n\n`;
-              document.getElementById("output").textContent += messageInfo;
+              const messageInfo = `<iframe srcdoc="${message.body.content}></iframe>`;
+              document.getElementById("output").innerHTML += messageInfo;
             });
           } catch (err) {
-            document.getElementById("output").textContent = "Error: " + err;
+            document.getElementById("output").innerHTML = "Error: " + err;
           }
         }
         const queryString = window.location.search;
