@@ -1,14 +1,14 @@
 export default async function handler(req, res) {
-    const { code } = req.body;
+    const { token } = req.body;
     //   localStorage.setItem("item", authData.access_token);
     // Use the access token to fetch data from Basecamp API
   
-    if (!code) {
+    if (!token) {
       return res.status(418).json({ error: "Access token not found" });
     }
     const response = await fetch(
       `https://launchpad.37signals.com/authorization.json`, {
-        headers: 'Authorization: Bearer ' + code
+        headers: 'Authorization: Bearer ' + token
       } 
     );
   
