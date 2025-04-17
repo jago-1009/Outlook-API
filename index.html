@@ -59,6 +59,7 @@
             let progressArr = await getInProgress();
             let compArr = await getCompleted();
             let newArr = await getNew();
+            let messages = [];
             messagesRaw.forEach(message => {
               progressArr.forEach(progress => {
                 if (!progress.title.includes(message.subject)) {
