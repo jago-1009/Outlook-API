@@ -121,7 +121,9 @@
     }
   async function getInProgress() {
     
-   const response = await fetch('/api/getInProgress');
+   const response = await fetch('/api/getInProgress', {
+    body: JSON.stringify({ token: localStorage.getItem('basecampCode') }),
+   });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
