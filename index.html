@@ -133,8 +133,6 @@
     const authData = await auth.json();
     const token = authData.access_token;
     console.log(token);
-    //test authorization
-    const result = await fetch('https://launchpad.37signals.com/authorization.json').then(console.log(res.json()));
     // Use the token to fetch in-progress items from Basecamp
 
    const response = await fetch('/api/getInProgress', {
