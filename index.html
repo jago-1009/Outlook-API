@@ -15,17 +15,18 @@
       #output {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
       }
       #output iframe {
-        width: 33%;
-        height: fit-content;
-        border: none;
+        width: 500px;
+        height: 300px;
         margin: 10px;
       }
     </style>
     <button id="signin">Sign in and Fetch Mail</button>
-    <pre id="output"></pre>
     <button id="basecamp-signin">Sign into Basecamp</button>
+
+    <pre id="output"></pre>
     <script>
       let authBody = null;
       const tenant = "common"; // Or your specific tenant ID
