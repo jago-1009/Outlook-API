@@ -178,6 +178,8 @@
     }
     const data = await response.json();
     console.log(data);
+    localStorage.setItem('user_id', data.identity.id);
+    localStorage.setItem('project_id', data.accounts[1].id);
   }
   </script>
 </body>
