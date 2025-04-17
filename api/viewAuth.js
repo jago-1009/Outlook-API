@@ -8,7 +8,10 @@ export default async function handler(req, res) {
     }
     const response = await fetch(
       `https://launchpad.37signals.com/authorization.json`, {
-        headers: 'Authorization: Bearer ' + token
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'User-Agent': 'Localhost-Test (garwoodj22@gmail.com)' // Basecamp *requires* this
+          }
       } 
     );
   
@@ -20,5 +23,4 @@ export default async function handler(req, res) {
     return res.status(200).json(data);
   }
   
-  //   https://launchpad.37signals.com/authorization/new?type=web_server&client_id=7e1d387ff157828dcf06ba3ebf5abbf035c03d6b&redirect_uri=https://outlook-api.vercel.app
   
