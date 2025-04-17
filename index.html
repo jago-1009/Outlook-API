@@ -1,185 +1,243 @@
 <!-- https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json IN PROGRESS -->
- <!-- https://3.basecamp.com/3537899/buckets/38519896/todolists/7663592669/todos.json NEW -->
-  <!-- https://3.basecamp.com/3537899/buckets/38519896/todolists/7663601115/todos.json?completed=true PUBLISHED -->
-
+<!-- https://3.basecamp.com/3537899/buckets/38519896/todolists/7663592669/todos.json NEW -->
+<!-- https://3.basecamp.com/3537899/buckets/38519896/todolists/7663601115/todos.json?completed=true PUBLISHED -->
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Fetch Outlook Mail</title>
-</head>
-<body>
-  <button id="signin">Sign in and Fetch Mail</button>
-  <pre id="output"></pre>
-  <button id="basecamp-signin">Sign into Basecamp</button>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fetch Outlook Mail</title>
+  </head>
+  <body>
+    <button id="signin">Sign in and Fetch Mail</button>
+    <pre id="output"></pre>
+    <button id="basecamp-signin">Sign into Basecamp</button>
 
-  <script>
-    let authBody = null;
-    const tenant = 'common'; // Or your specific tenant ID
-    const clientId = '97631fd0-f986-4c30-bf2e-202738ae6544';
-    const redirectUri = window.location.origin;
-    const scopes = 'https://graph.microsoft.com/Mail.Read';
+    <script>
+      let authBody = null;
+      const tenant = "common"; // Or your specific tenant ID
+      const clientId = "97631fd0-f986-4c30-bf2e-202738ae6544";
+      const redirectUri = window.location.origin;
+      const scopes = "https://graph.microsoft.com/Mail.Read";
 
-    
-    document.getElementById('basecamp-signin').addEventListener('click', () => {
-      const authUrl = `https://launchpad.37signals.com/authorization/new?type=web_server&client_id=7e1d387ff157828dcf06ba3ebf5abbf035c03d6b&redirect_uri=https://outlook-api.vercel.app`
-      // Redirect to Basecamp authorization URL
+      document
+        .getElementById("basecamp-signin")
+        .addEventListener("click", () => {
+          const authUrl = `https://launchpad.37signals.com/authorization/new?type=web_server&client_id=7e1d387ff157828dcf06ba3ebf5abbf035c03d6b&redirect_uri=https://outlook-api.vercel.app`;
+          // Redirect to Basecamp authorization URL
 
-      window.location.href = authUrl;
-    });
-    document.getElementById('signin').addEventListener('click', () => {
-      const authUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize` +
-        `?client_id=${clientId}` +
-        `&response_type=token` +
-        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-        `&scope=${encodeURIComponent(scopes)}` +
-        `&response_mode=fragment`;
-
-      window.location.href = authUrl;
-    });
-
-    window.addEventListener('load', async () => {
-      const hash = window.location.hash;
-      if (hash.includes('access_token')) {
-        const params = new URLSearchParams(hash.substring(1));
-        const token = params.get('access_token');
-        try {
-          const folderId = await getFolderIdByName(token, 'Tickets');
-          if (!folderId) {
-            document.getElementById('output').textContent = 'Folder "Tickets" not found.';
-            return;
-          }
-       
-          
-          const messagesRaw = await getAllMessagesFromFolder(token, folderId);
-          await getAuthDetails();
-          let progressArr = await getInProgress();
-          let messages = messagesRaw.filter(message => {
-            return progressArr.some(progress => {
-              return message.subject && message.subject.includes(progress.title) == false;
-            });
-          });
-          console.log(messages);
-           messages.forEach(message => {
-            if (message.subject) return; // Skip if subject is not available
-            const messageInfo = `Subject: ${message.subject}\nFrom: ${message.from.emailAddress.name} <${message.from.emailAddress.address}>\nReceived: ${new Date(message.receivedDateTime).toLocaleString()}\n\n`;
-            document.getElementById('output').textContent += messageInfo;
-            
-           });
-       
-        } catch (err) {
-          document.getElementById('output').textContent = 'Error: ' + err;
-        }
-      }
-      const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    if (urlParams.has('code')) {
-      // The user has been redirected back with an authorization code
-      const code = urlParams.get('code');
-      console.log('Authorization code:', code);
-      localStorage.setItem('basecampCode', code);
-      
-      // You can now exchange the code for an access token using your server-side code
-    } else {
-      console.log('No authorization code found in URL parameters.');
-    }
-    });
-
-    async function getFolderIdByName(token, folderName) {
-  const folderQueue = ['https://graph.microsoft.com/v1.0/me/mailFolders'];
-  
-  while (folderQueue.length > 0) {
-    const url = folderQueue.shift();
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-
-    for (const folder of data.value) {
-      if (folder.displayName === folderName) {
-        return folder.id;
-      }
-
-      if (folder.childFolderCount > 0) {
-        folderQueue.push(`https://graph.microsoft.com/v1.0/me/mailFolders/${folder.id}/childFolders`);
-      }
-    }
-
-    if (data['@odata.nextLink']) {
-      folderQueue.push(data['@odata.nextLink']);
-    }
-  }
-
-  return null; // Not found
-}
-
-    async function getAllMessagesFromFolder(token, folderId) {
-      let url = `https://graph.microsoft.com/v1.0/me/mailFolders/${folderId}/messages?$top=50`;
-      const allMessages = [];
-
-      while (url) {
-        const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${token}` }
+          window.location.href = authUrl;
         });
-        const data = await res.json();
-        allMessages.push(...data.value);
-        url = data['@odata.nextLink'] || null;
+      document.getElementById("signin").addEventListener("click", () => {
+        const authUrl =
+          `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize` +
+          `?client_id=${clientId}` +
+          `&response_type=token` +
+          `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+          `&scope=${encodeURIComponent(scopes)}` +
+          `&response_mode=fragment`;
+
+        window.location.href = authUrl;
+      });
+
+      window.addEventListener("load", async () => {
+        const hash = window.location.hash;
+        if (hash.includes("access_token")) {
+          const params = new URLSearchParams(hash.substring(1));
+          const token = params.get("access_token");
+          try {
+            const folderId = await getFolderIdByName(token, "Tickets");
+            if (!folderId) {
+              document.getElementById("output").textContent =
+                'Folder "Tickets" not found.';
+              return;
+            }
+
+            const messagesRaw = await getAllMessagesFromFolder(token, folderId);
+            await getAuthDetails();
+
+            let progressArr = await getInProgress();
+            let compArr = await getCompleted();
+            let newArr = await getNew();
+            let messages = messagesRaw.filter((message) => {
+              return [progressArr, compArr, newArr].some((arr) => {
+                return arr.some((item) => {
+                  return (
+                    message.subject &&
+                    message.subject.includes(item.title) == false
+                  );
+                });
+              });
+            });
+
+            console.log(messages);
+            messages.forEach((message) => {
+              if (message.subject) return; // Skip if subject is not available
+              const messageInfo = `Subject: ${message.subject}\nFrom: ${
+                message.from.emailAddress.name
+              } <${message.from.emailAddress.address}>\nReceived: ${new Date(
+                message.receivedDateTime
+              ).toLocaleString()}\n\n`;
+              document.getElementById("output").textContent += messageInfo;
+            });
+          } catch (err) {
+            document.getElementById("output").textContent = "Error: " + err;
+          }
+        }
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        if (urlParams.has("code")) {
+          // The user has been redirected back with an authorization code
+          const code = urlParams.get("code");
+          console.log("Authorization code:", code);
+          localStorage.setItem("basecampCode", code);
+
+          // You can now exchange the code for an access token using your server-side code
+        } else {
+          console.log("No authorization code found in URL parameters.");
+        }
+      });
+
+      async function getFolderIdByName(token, folderName) {
+        const folderQueue = ["https://graph.microsoft.com/v1.0/me/mailFolders"];
+
+        while (folderQueue.length > 0) {
+          const url = folderQueue.shift();
+          const res = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+
+          for (const folder of data.value) {
+            if (folder.displayName === folderName) {
+              return folder.id;
+            }
+
+            if (folder.childFolderCount > 0) {
+              folderQueue.push(
+                `https://graph.microsoft.com/v1.0/me/mailFolders/${folder.id}/childFolders`
+              );
+            }
+          }
+
+          if (data["@odata.nextLink"]) {
+            folderQueue.push(data["@odata.nextLink"]);
+          }
+        }
+
+        return null; // Not found
       }
 
-      return allMessages;
-    }
-  async function getInProgress() {
-   
-    const token = authBody.access_token;
-    console.log(token);
-    // Use the token to fetch in-progress items from Basecamp
+      async function getAllMessagesFromFolder(token, folderId) {
+        let url = `https://graph.microsoft.com/v1.0/me/mailFolders/${folderId}/messages?$top=50`;
+        const allMessages = [];
 
-   const response = await fetch('/api/getInProgress', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ token: token, accountID: localStorage.getItem('user_id') }),
-   });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    return data;
-  }
-  async function getAuthDetails() {
-    const auth = await fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ code: localStorage.getItem('basecampCode') }),
-    });
-    if (!auth.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const authData = await auth.json();
-    authBody = authData;
-    const token = authData.access_token;
-    console.log(token);
-    // Use the token to fetch in-progress items from Basecamp
+        while (url) {
+          const res = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          allMessages.push(...data.value);
+          url = data["@odata.nextLink"] || null;
+        }
 
-   const response = await fetch('/api/viewAuth', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ token: token }),
-   });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    console.log(data);
-    localStorage.setItem('user_id', data.identity.id);
-    localStorage.setItem('project_id', data.accounts[1].id);
-  }
-  </script>
-</body>
+        return allMessages;
+      }
+      async function getInProgress() {
+        const token = authBody.access_token;
+        console.log(token);
+        // Use the token to fetch in-progress items from Basecamp
+
+        const response = await fetch("/api/getInProgress", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            accountID: localStorage.getItem("user_id"),
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        return data;
+      }
+      async function getCompleted() {
+        const token = authBody.access_token;
+        console.log(token);
+        // Use the token to fetch in-progress items from Basecamp
+
+        const response = await fetch("/api/getCompleted", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            accountID: localStorage.getItem("user_id"),
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        return data;
+      }
+      async function getNew() {
+        const token = authBody.access_token;
+        console.log(token);
+        // Use the token to fetch in-progress items from Basecamp
+
+        const response = await fetch("/api/getNew", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            accountID: localStorage.getItem("user_id"),
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        return data;
+      }
+      async function getAuthDetails() {
+        const auth = await fetch("/api/auth", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code: localStorage.getItem("basecampCode") }),
+        });
+        if (!auth.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const authData = await auth.json();
+        authBody = authData;
+        const token = authData.access_token;
+        console.log(token);
+        // Use the token to fetch in-progress items from Basecamp
+
+        const response = await fetch("/api/viewAuth", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: token }),
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        console.log(data);
+        localStorage.setItem("user_id", data.identity.id);
+        localStorage.setItem("project_id", data.accounts[1].id);
+      }
+    </script>
+  </body>
 </html>
