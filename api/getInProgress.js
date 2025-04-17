@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     });
   
     if (!response.ok) {
-      return res.status(response.status).json({ error: 'Failed to fetch Basecamp data', details: await response.text() });
+      return res.status(response.status).json({ error: 'Failed to fetch Basecamp data', details: await response.json() });
     }
   
     const data = await response.json();
