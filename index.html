@@ -90,7 +90,7 @@
             console.log(messages);
             messages.forEach((message) => {
               
-              const messageInfo = `<iframe srcdoc='${message.body.content}''></iframe>`;
+              const messageInfo = `<div><h2>${message.subject}</h2><iframe srcdoc='${message.body.content}''></iframe></div>`;
               document.getElementById("output").innerHTML += messageInfo;
             });
           } catch (err) {
