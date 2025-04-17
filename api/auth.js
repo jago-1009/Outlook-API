@@ -3,7 +3,7 @@ export default async function handler(req, res) {
 //   localStorage.setItem("item", authData.access_token);
   // Use the access token to fetch data from Basecamp API
 
-  if (!token) {
+  if (!code) {
     return res.status(418).json({ error: "Access token not found" });
   }
   const response = await fetch(`https://launchpad.37signals.com/oauth/token`, {
@@ -16,6 +16,7 @@ export default async function handler(req, res) {
       client_secret: process.env.CLIENT_SECRET,
       redirect_uri: "https://outlook-api.vercel.app",
       type: "authorization_code",
+        code: code,
     }),
   });
 
