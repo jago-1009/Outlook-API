@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const response = await fetch(`https://3.basecamp.com/3537899/buckets/38519896/todolists/7661448591/todos.json`, {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'User-Agent': 'Localhost-Test (email@gmail.com)'
+        'User-Agent': 'Localhost-Test (garwoodj22@gmail.com)'
       }
     });
   
