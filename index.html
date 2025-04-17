@@ -59,23 +59,18 @@
             let progressArr = await getInProgress();
             let compArr = await getCompleted();
             let newArr = await getNew();
-            let messages = [];
-            messagesRaw.forEach(message => {
-              progressArr.forEach(progress => {
-                if (!progress.title.includes(message.subject)) {
-                  messages.push(message);
-                }
-              });
-              compArr.forEach(comp => {
-                if (!comp.title.includes(message.subject)) {
-                  messages.push(message);
-                }
-              });
-              newArr.forEach(newItem => {
-                if (!newItem.title.includes(message.subject)) {
-                  messages.push(message);
-                }
-              });
+
+            let messages = messagesRaw.filter((message) => {
+              // Skip if message has no subject
+              if (!message.subject) return false;
+
+              // Combine all titles from the three arrays
+              let allTitles = [...progressArr, ...compArr, ...newArr];
+
+              // Check if message.subject is included in any title
+              return !allTitles.some((item) =>
+                item.title.includes(message.subject)
+              );
             });
 
             console.log(messages);
@@ -166,7 +161,7 @@
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-  
+
         return data;
       }
       async function getCompleted() {
