@@ -12,6 +12,7 @@
 <body>
   <button id="signin">Sign in and Fetch Mail</button>
   <pre id="output"></pre>
+  <button id="basecamp-signin">Sign into Basecamp</button>
 
   <script>
     const tenant = 'common'; // Or your specific tenant ID
@@ -19,6 +20,15 @@
     const redirectUri = window.location.origin;
     const scopes = 'https://graph.microsoft.com/Mail.Read';
 
+    
+    document.getElementById('basecamp-signin').addEventListener('click', () => {
+      const authUrl = `https://launchpad.37signals.com/authorization/new?type=web_server&client_id=7e1d387ff157828dcf06ba3ebf5abbf035c03d6b&redirect_uri=https://outlook-api.vercel.app/` +
+        `&response_type=code` +
+        `&scope=read write`;
+      // Redirect to Basecamp authorization URL
+
+      window.location.href = authUrl;
+    });
     document.getElementById('signin').addEventListener('click', () => {
       const authUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize` +
         `?client_id=${clientId}` +
