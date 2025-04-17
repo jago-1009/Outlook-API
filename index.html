@@ -50,7 +50,7 @@
             return;
           }
        
-          ;
+          
           const messages = await getAllMessagesFromFolder(token, folderId);
           console.log(messages);
            messages.forEach(message => {
@@ -58,6 +58,7 @@
             document.getElementById('output').textContent += messageInfo;
             
            });
+           const inProgress = await getInProgress();
         } catch (err) {
           document.getElementById('output').textContent = 'Error: ' + err;
         }

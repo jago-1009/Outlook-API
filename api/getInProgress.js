@@ -1,9 +1,7 @@
 
 export default async function handler(req, res) {
 
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const accessToken = urlParams.get('code');
+ const accessToken = localStorage.getItem('access_token');
     console.log('Access Token:', accessToken);
     console.log('Query String:', queryString);
         const accountId = process.env.BASECAMP_ACCOUNT_ID;
