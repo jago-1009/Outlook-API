@@ -63,8 +63,7 @@
               return [progressArr, compArr, newArr].some((arr) => {
                 return arr.some((item) => {
                   return (
-                    message.subject &&
-                    message.subject.includes(item.title) == false
+                    message.subject.includes(item.title)
                   );
                 });
               });
@@ -158,6 +157,7 @@
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
+  
         return data;
       }
       async function getCompleted() {
