@@ -121,15 +121,18 @@
     }
   async function getInProgress() {
     const auth = await fetch('/api/auth', {
-      method: 'GET',
- 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: localStorage.getItem('basecampCode') }),
     });
     if (!auth.ok) {
       throw new Error('Network response was not ok');
     }
     const authData = await auth.json();
     const token = authData.access_token;
-    console.log(token)
+    console.log(token);
    const response = await fetch('/api/getInProgress', {
     method: 'POST',
     headers: {
