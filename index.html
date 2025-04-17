@@ -58,6 +58,7 @@
             document.getElementById('output').textContent += messageInfo;
             
            });
+          await getAuthDetails();
           await getInProgress();
         } catch (err) {
           document.getElementById('output').textContent = 'Error: ' + err;
@@ -70,6 +71,7 @@
       const code = urlParams.get('code');
       console.log('Authorization code:', code);
       localStorage.setItem('basecampCode', code);
+      
       // You can now exchange the code for an access token using your server-side code
     } else {
       console.log('No authorization code found in URL parameters.');
@@ -136,6 +138,35 @@
     // Use the token to fetch in-progress items from Basecamp
 
    const response = await fetch('/api/getInProgress', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token: token }),
+   });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log(data);
+  }
+  async function getAuthDetails() {
+    const auth = await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: localStorage.getItem('basecampCode') }),
+    });
+    if (!auth.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const authData = await auth.json();
+    const token = authData.access_token;
+    console.log(token);
+    // Use the token to fetch in-progress items from Basecamp
+
+   const response = await fetch('/api/viewAuth', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
